@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!-- Employee -->
+		<record id="tk_view_employee_form" model="ir.ui.view">
+			<field name="name">tk.hr.employee.form</field>
+			<field name="model">hr.employee</field>
+			<field name="arch" type="xml">
+				<form string="Employee">
+					<sheet>
+
+						<field name="image" widget='image' class="oe_avatar" options='{"preview_image":"image_medium"}'/>
+						<div class="oe_title">
+							<label for="name" class="oe_edit_only"/>
+							<h1>
+								<field name="name" placeholder="Employee's Name" readonly="True"/>
+							</h1>
+						</div>
+						<field name="category_ids" widget="many2many_tags" placeholder="e.g. Part Time" groups="base.group_user" invisible="True"/>
+						<field name="user_id" invisible="True"/>
+						<notebook>
+
+							<page string="Personal Information" groups="base.group_user">
+								<group>
+									<group string="Citizenship &amp; Other Information">
+										<field name="country_id" options='{"no_open": True, "no_create": True}'/>
+										<field name="identification_id" groups="base.group_user"/>
+										<field name="passport_id" groups="base.group_user"/>
+										<field name="bank_account_id"/>
+									</group>
+									<group string="Contact Information">
+										<field name="address_home_id"
+											context="{'show_address': 1}"
+											options='{"always_reload": True, "highlight_first_line": True}'/>
+									</group>
+									<group string="Status">
+										<field name="gender"/>
+										<field name="marital"/>
+									</group>
+									<group string="Birth">
+										<field name="birthday"/>
+									</group>
+								</group>
+							</page>
+
+
+						</notebook>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record id="tk_hr_custom_employee_form" model="ir.ui.view">
+			<field name="model">hr.employee</field>
+			<field name="name">tk.custom.hr.employee.form</field>
+			<field name="inherit_id" ref="tk_view_employee_form"/>
+			<field name="arch" type="xml">
+				<!-- Personal Data Tab-->
+				<field name="category_ids" position="before">
+					<label for="fname" string="Name (First, Middle, Last, MI, Nickname)" class="oe_edit_only"/>
+					<div>
+						<field name="fname" placeholder="First" required="1" class="oe_inline" width="33%%"/>
+						<field name="mname" placeholder="Middle" class="oe_inline" width="33%%"/>
+						<field name="lname" placeholder="Last" required="1" class="oe_inline" width="33%%"/>
+					</div>
+					<div>
+						<field name="mi" placeholder="MI" class="oe_inline" width="10%%"/>
+						<field name="nickname" placeholder="Nickname" class="oe_inline" width="80%%"/>
+					</div>
+					<label for="id_no" class="oe_edit_only"/>
+					<field name="id_no" placeholder="ID Number"/>
+					<!--<label for="department_id" class="oe_edit_only"/>-->
+					
+					<field name="department_id" placeholder="Department"/>
+				</field>
+				<field name="department_id" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</field>
+				<field name="address_home_id" position="after">
+					<field name="city_address"/>
+					<field name="city_tel_no"/>
+					<field name="provincial_address"/>
+					<field name="prov_tel_no"/>
+					<field name="personal_email"/>
+				</field>
+				<field name="identification_id" position="attributes">
+					<attribute name="invisible">True</attribute>
+				</field>
+
+				<field name="bank_account_id" position="after">
+					<field name="sss_no"/>
+					<field name="prc_no"/>
+					<field name="prc_date_issued"/>
+					<field name="valid_until"/>
+					<field name="date_started"/>
+					<field name="ph_no"/>
+					<field name="perm_appoint"/>
+					<field name="hdmf_no"/>
+					<field name="tin"/>
+					<field name="bir_certified_dependent"/>
+				</field>
+				<field name="marital" position="after">
+					<field name="marriage_date"/>
+					<field name="maiden_name"/>
+				</field>
+				<field name="birthday" position="after">
+					<field name="birth_month"/>
+					<field name="religion"/>
+					<field name="citizenship"/>
+					<field name="birth_place"/>
+					<field name="height"/>
+					<field name="weight"/>
+					<field name="professional_membership"/>
+					<field name="special_skills"/>
+					<field name="interest"/>
+					<field name="languages"/>
+					<field name="hobbies"/>
+					<field name="talents"/>
+				</field>
+				<field name="country_id" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</field>
+				<field name="passport_id" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</field>
+				<field name="address_home_id" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</field>
+				<field name="bank_account_id" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</field>
+
+				<notebook position="inside">
+					<page string="Educational Data">
+						<label name="Education History" string="Education History"/>
+						<field name="academics_ids" string="Education">
+							<tree string="Academic Level" editable="bottom">
+								<field name="acad_level"/>
+								<field name="school"/>
+								<field name="degree_obtained"/>
+								<field name="honors"/>
+								<field name="start_date"/>
+								<field name="end_date"/>
+								<field name="units"/>
+								<field name="major"/>
+								<field name="minor"/>
+								<field name="degree_type"/>
+							</tree>
+						</field>
+						<label name="Seminar" string="Seminars and Trainings"/>
+						<field name="seminar_ids" string="Seminars">
+							<tree string="Seminars" editable="bottom">
+								<field name="seminar_title"/>
+								<field name="venue"/>
+								<field name="speaker"/>
+								<field name="start_date"/>
+								<field name="end_date"/>
+							</tree>
+						</field>
+					</page>
+					<page string="Family Data">
+						<group>
+							<field name="name_of_spouse"/>
+							<field name="occupation_of_spouse"/>
+							<field name="employer_of_spouse"/>
+						</group>
+						<group>
+							<group>
+								<field name="office_address"/>
+								<field name="office_tel_no"/>
+							</group>
+							<group>
+								<field name="date_marriage"/>
+								<field name="marriage_place"/>
+							</group>
+						</group>
+						<separator string="Dependents"/>
+						<group>
+							<field name="children_ids" nolabel="1">
+								<tree string="Children" editable="bottom">
+									<field name="first_name"/>
+									<field name="last_name"/>
+									<field name="relationship"/>
+									<field name="date_of_birth"/>
+									<field name="school"/>
+								</tree>
+							</field>
+						</group>
+						<separator string="Parents"/>
+						<group>
+							<group>
+								<field name="mother_name"/>
+								<field name="citizenship_of_mother"/>
+								<field name="occupation_of_mother"/>
+							</group>
+							<group>
+								<field name="father_name"/>
+								<field name="citizenship_of_father"/>
+								<field name="occupation_of_father"/>
+							</group>
+						</group>
+						<group>
+							<field name="parent_address"/>
+						</group>
+						<group>
+							<group>
+								<field name="emer_contact_person"/>
+							</group>
+							<group>
+								<field name="emer_contact_no"/>
+							</group>
+						</group>
+						<group>
+							<field name="emer_contact_address"/>
+						</group>
+					</page>
+				</notebook>
+			</field>
+		</record>
+
+		<record id="tk_hr_hr_employee_view_form2" model="ir.ui.view">
+			<field name="name">tk.hr.hr.employee.view.form2</field>
+			<field name="model">hr.employee</field>
+			<field name="inherit_id" ref="hr_contract.hr_hr_employee_view_form2"/>
+			<field name="arch" type="xml">
+				<data>
+
+				
+					<field name="medic_exam" position="attributes">
+						<attribute name="invisible">True</attribute>
+					</field>
+
+					<field name="vehicle" position="attributes">
+						<attribute name="invisible">True</attribute>
+					</field>
+							
+					<field name="vehicle_distance" position="attributes">
+						<attribute name="invisible">True</attribute>
+					</field>
+				
+
+				</data>
+			</field>
+		</record>
+
+		<!--
+		<record id="tk_tk_hr_hr_employee_view_form2" model="ir.ui.view">
+			<field name="name">tk.tk.hr.hr.employee.view.form2</field>
+			<field name="model">hr.employee</field>
+			<field name="inherit_id" ref="hr.view_employee_form"/>
+			<field name="arch" type="xml">
+				<data>
+
+					<xpath expr="//group[@name='active_group']" position="replace">
+						<group string="Current Contracterrr">
+							<field name="medic_exam" string="Medical Exameer"/>
+						</group>
+					</xpath>
+				</data>
+			</field>
+		</record>-->
+
+		<record id="tk_view_employee_tree" model="ir.ui.view">
+			<field name="name">tk.hr.employee.tree</field>
+			<field name="model">hr.employee</field>
+			<field name="arch" type="xml">
+				<tree string="Employees" decoration-bf="message_needaction==True">
+					<field name="name"/>
+					<field name="work_phone"/>
+					<field name="work_email"/>
+					<field name="company_id" groups="base.group_multi_company"/>
+					<field name="department_id"/>
+					<field name="job_id"/>
+					<field name="parent_id"/>
+					<field name="message_needaction" invisible="1"/>
+				</tree>
+			</field>
+		</record>
+
+		<!-- <record id="tk_employee_can_edit_view_action" model="ir.actions.act_window">
+			<field name="name">HR EMPLOYEE</field>
+			<field name="res_model">hr.employee</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="search_view_id" eval="False"/>
+			<field name="context">{}</field>
+			<field name="help"></field>
+			<field name="domain">[('user_id','=',uid)]</field>
+		</record> -->
+
+		<!-- Employee -->
+		<!-- <record model="ir.actions.act_window.view" id="tk_employee_can_edit_view_tree_view">
+			<field eval="1" name="sequence"/>
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="tk_view_employee_tree"/>
+			<field name="act_window_id" ref="tk_employee_can_edit_view_action"/>
+		</record> -->
+
+		<!-- Employee --> 
+		<!-- <record model="ir.actions.act_window.view" id="tk_employee_can_edit_view_form_view">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="tk_view_employee_form"/>
+			<field name="act_window_id" ref="tk_employee_can_edit_view_action"/>
+		</record> -->
+
+		<!--
+		<menuitem
+			action="tk_employee_can_edit_view_action" id="employee_can_edit_view_menu"
+			parent="hr.menu_hr_root" name="Employee View" sequence="2"/>-->
+
+
+	</data>
+</openerp>

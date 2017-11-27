@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+
+	<data noupdate="0">
+		<!--
+
+		<menuitem name="1 Leaves" parent="hr_holidays.menu_hr_holidays_approvals" id="hr_holidays.menu_open_department_leave_approve" action="hr_holidays.open_department_holidays_approve" sequence="1" groups="base.group_hr_manager"/>
+
+		<menuitem name="1 Leaves to Approve" id="hr_holidays.menu_hr_holidays_approvals" parent="hr_holidays.menu_hr_holidays_root" sequence="3" groups="base.group_hr_manager"/>
+
+		<menuitem name="1 Leaves Allocation" parent="hr_holidays.menu_hr_holidays_approvals" id="hr_holidays.menu_open_department_leave_allocation_approve" groups="base.group_hr_manager" action="hr_holidays.open_department_holidays_allocation_approve" sequence="2"/>
+		-->
+		<!--
+		<menuitem name="Leaves" id="menu_hr_holidays_root" sequence="95" web_icon="hr_holidays,static/description/icon.png" groups="base.group_user"/>
+		<menuitem name="Dashboard" id="menu_hr_holidays_dashboard" parent="menu_hr_holidays_root" sequence="1" action="action_hr_holidays_dashboard"/>
+		<menuitem name="My Leaves" id="menu_hr_holidays_my_leaves" parent="menu_hr_holidays_root" sequence="2"/>
+
+	
+		<menuitem name="Reports" id="menu_hr_holidays_report" parent="menu_hr_holidays_root" sequence="99" groups="base.group_hr_manager,base.group_hr_user"/>
+		<menuitem parent="menu_hr_holidays_my_leaves" id="menu_open_ask_holidays_new" action="open_ask_holidays" sequence="22"/>
+		<menuitem parent="menu_hr_holidays_my_leaves" id="menu_open_allocation_holidays" action="open_allocation_holidays" sequence="40"/>
+		
+		<menuitem id="menu_hr_holidays_configuration" name="Configuration" parent="menu_hr_holidays_root"
+			sequence="100" groups="base.group_configuration,base.group_hr_manager" action="open_view_holiday_status"/>
+		<menuitem name="Leaves" parent="menu_hr_holidays_approvals" id="menu_open_department_leave_approve" groups="base.group_hr_manager,base.group_hr_user" action="open_department_holidays_approve" sequence="1"/>
+
+		<menuitem name="Leave Details" parent="menu_hr_holidays_report" id="menu_open_employee_leave" groups="base.group_hr_manager,base.group_hr_user" action="open_employee_leaves" sequence="4"/>
+		-->
+
+
+		<record model="ir.actions.act_window" id="hr_holidays.action_hr_holidays_dashboard">
+			<field name="name">All Leaves</field>
+			<field name="res_model">hr.holidays</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">calendar</field>
+			<field name="context">{'search_default_year': 1, 'search_default_group_employee': 1}</field>
+			<field name="domain">[('holiday_type','=','employee'), ('type', '=', 'remove'), ('state', '!=', 'refuse'), ('user_id','=',uid)]</field>
+			<field name="search_view_id" ref="hr_holidays.view_hr_holidays_filter"/>
+		</record>
+		<record model="ir.actions.act_window" id="hr_holidays.open_ask_holidays">
+			<field name="name">Leaves Request</field>
+			<field name="res_model">hr.holidays</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="hr_holidays.edit_holiday_new"/>
+			<field name="context">{
+					'default_type': 'remove',
+					'search_default_my_leaves':1,
+					'needaction_menu_ref':
+					[
+						'hr_holidays.menu_open_company_allocation',
+					]
+				}</field>
+			<!--<field name="domain">[ '&amp;', '|', ('type','=','remove'), ('user_id','=',uid), ('department_id.manager_id.user_id', '=', uid)]</field>-->
+			<field name="domain">[ '|', '&amp;', '|', ('type','=','remove'), ('user_id','=',uid), ('department_id.manager_id.user_id', '=', uid), ('user_id','=',uid)]</field>
+			<field name="search_view_id" ref="hr_holidays.view_hr_holidays_filter"/>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">
+					Click to create a new leave request.
+				  </p>
+				<p>
+					Once you have recorded your leave request, it will be sent
+					to a manager for validation. Be sure to set the right leave
+					type (recuperation, legal holidays, sickness) and the exact
+					number of open days related to your leave.
+				  </p>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="hr_holidays.open_allocation_holidays">
+			<field name="name">Allocation Request</field>
+			<field name="res_model">hr.holidays</field>
+			<field name="view_type">form</field>
+			<field name="context">{
+				'default_type':'add',
+				'search_default_my_leaves':1,
+				'needaction_menu_ref':
+				[
+					'hr_holidays.menu_open_company_allocation',
+				]
+			}</field>
+			<field name="domain">[('type','=','add'), ('user_id','=',uid)]</field>
+			<field name="view_id" ref="hr_holidays.edit_holiday_new"/>
+			<field name="search_view_id" ref="hr_holidays.view_hr_holidays_filter"/>
+		</record>
+		<record model="ir.actions.act_window" id="departmental_leave_viewing_action">
+			<field name="name"> Leaves under Department </field>
+			<field name="res_model">hr.holidays</field>
+			<field name="view_type">form</field>
+			<field name="domain">[('department_id.manager_id.user_id','=',uid), ('type','=','remove')]</field>
+		</record>
+		<record model="ir.actions.act_window.view" id="hr_calendar_override_own_dept">
+			<field eval="0" name="sequence"/>
+			<field name="view_mode">calendar</field>
+			<field name="view_id" ref="attendance_monitor.own_department_calendar_leaves_view"/>
+			<field name="act_window_id" ref="departmental_leave_viewing_action"/>
+		</record>
+		<!-- s -->
+		<menuitem name="Leaves Summary" parent="hr_holidays.menu_hr_holidays_my_leaves" id="hr_holidays.menu_open_company_allocation" action="hr_holidays.open_company_allocation" sequence="21" groups="attendance_monitor.group_attendance_clerk"/>
+
+		<menuitem name="Own Department Leaves" id="departmental_leaves_own" parent="attendance_monitor.department_head_leave_approval" action="departmental_leave_viewing_action" groups="attendance_monitor.group_department_head" />
+		<record model="ir.actions.act_window" id="all_leave_viewing_action">
+			<field name="name"> All Leaves </field>
+			<field name="res_model">hr.holidays</field>
+			<field name="view_type">form</field>
+		</record>
+		<menuitem name="All Leaves" id="hr_all_leaves" parent="attendance_monitor.attendance_card_view" action="all_leave_viewing_action" groups="base.group_hr_manager" />
+		<record id="hr_holidays_custom_hr_holidays_filter" model="ir.ui.view">
+			<field name="model">hr.holidays</field>
+			<field name="name">hr.holidyas.custom.hr.holidays.filter</field>
+			<field name="inherit_id" ref="hr_holidays.view_holiday_new_calendar"/>
+			<field name="arch" type="xml">
+				<field name="employee_id" position="after">
+					<field name="user_id" visible="False"/>
+				</field>
+			</field>
+		</record>
+		<record id="hr_custom_employee_form" model="ir.ui.view">
+			<field name="model">hr.employee</field>
+			<field name="name">custom.hr.employee.form</field>
+			<field name="inherit_id" ref="hr.view_employee_form"/>
+			<field name="arch" type="xml">
+				<!-- Personal Data Tab-->
+				<field name="category_ids" position="before">
+					<label for="fname" string="Name (First, Middle, Last, MI, Nickname)" class="oe_edit_only"/>
+					<div>
+						<field name="fname" placeholder="First" required="1" class="oe_inline" width="33%%"/>
+						<field name="mname" placeholder="Middle" class="oe_inline" width="33%%"/>
+						<field name="lname" placeholder="Last" required="1" class="oe_inline" width="33%%"/>
+					</div>
+					<div>
+						<field name="mi" placeholder="MI" class="oe_inline" width="10%%"/>
+						<field name="nickname" placeholder="Nickname" class="oe_inline" width="80%%"/>
+					</div>
+					<label for="id_no" class="oe_edit_only"/>
+					<field name="id_no" placeholder="ID Number"/>
+					<!--<label for="department_id" class="oe_edit_only"/>-->
+					<label name="Leave Tags" string="Leave Tags"/>
+					<field name="department_id" placeholder="Department"/>
+				</field>
+				<field name="department_id" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</field>
+				<field name="job_id" position="before">
+					<field name="position"/>
+					<field name="subject"/>
+					<field name="level"/>
+					<field name="employee_id"/>
+					<field name="card_no"/>
+					<field name="employee_internal_category"/>
+				</field>
+				<field name="address_home_id" position="after">
+					<field name="city_address"/>
+					<field name="city_tel_no"/>
+					<field name="provincial_address"/>
+					<field name="prov_tel_no"/>
+					<field name="personal_email"/>
+				</field>
+				<field name="identification_id" position="attributes">
+					<attribute name="invisible">True</attribute>
+				</field>
+				<field name="parent_id" position="attributes">
+					<attribute name="string">Department Head</attribute>
+				</field>
+				<field name="coach_id" position="attributes">
+					<attribute name="string">Supervisor</attribute>
+				</field>
+				<field name="bank_account_id" position="after">
+					<field name="sss_no"/>
+					<field name="prc_no"/>
+					<field name="prc_date_issued"/>
+					<field name="valid_until"/>
+					<field name="date_started"/>
+					<field name="ph_no"/>
+					<field name="perm_appoint"/>
+					<field name="hdmf_no"/>
+					<field name="tin"/>
+					<field name="bir_certified_dependent"/>
+				</field>
+				<field name="marital" position="after">
+					<field name="marriage_date"/>
+					<field name="maiden_name"/>
+				</field>
+				<field name="birthday" position="after">
+					<field name="birth_month"/>
+					<field name="religion"/>
+					<field name="citizenship"/>
+					<field name="birth_place"/>
+					<field name="height"/>
+					<field name="weight"/>
+					<field name="professional_membership"/>
+					<field name="special_skills"/>
+					<field name="interest"/>
+					<field name="languages"/>
+					<field name="hobbies"/>
+					<field name="talents"/>
+				</field>
+				<field name="country_id" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</field>
+				<field name="passport_id" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</field>
+				<field name="address_home_id" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</field>
+				<field name="bank_account_id" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</field>
+				<field name="user_id" position="after">
+					<field name="active"/>
+					<field name="date_resigned" attrs="{'required': [('active', '=', False)]}"/>
+				</field>
+				<notebook position="inside">
+					<page string="Educational Data">
+						<label name="Education History" string="Education History"/>
+						<field name="academics_ids" string="Education">
+							<tree string="Academic Level" editable="bottom">
+								<field name="acad_level"/>
+								<field name="school"/>
+								<field name="degree_obtained"/>
+								<field name="honors"/>
+								<field name="start_date"/>
+								<field name="end_date"/>
+								<field name="units"/>
+								<field name="major"/>
+								<field name="minor"/>
+								<field name="degree_type"/>
+							</tree>
+						</field>
+						<label name="Seminar" string="Seminars and Trainings"/>
+						<field name="seminar_ids" string="Seminars">
+							<tree string="Seminars" editable="bottom">
+								<field name="seminar_title"/>
+								<field name="venue"/>
+								<field name="speaker"/>
+								<field name="start_date"/>
+								<field name="end_date"/>
+							</tree>
+						</field>
+					</page>
+					<page string="Family Data">
+						<group>
+							<field name="name_of_spouse"/>
+							<field name="occupation_of_spouse"/>
+							<field name="employer_of_spouse"/>
+						</group>
+						<group>
+							<group>
+								<field name="office_address"/>
+								<field name="office_tel_no"/>
+							</group>
+							<group>
+								<field name="date_marriage"/>
+								<field name="marriage_place"/>
+							</group>
+						</group>
+						<separator string="Dependents"/>
+						<group>
+							<field name="children_ids" nolabel="1">
+								<tree string="Children" editable="bottom">
+									<field name="first_name"/>
+									<field name="last_name"/>
+									<field name="relationship"/>
+									<field name="date_of_birth"/>
+									<field name="school"/>
+								</tree>
+							</field>
+						</group>
+						<separator string="Parents"/>
+						<group>
+							<group>
+								<field name="mother_name"/>
+								<field name="citizenship_of_mother"/>
+								<field name="occupation_of_mother"/>
+							</group>
+							<group>
+								<field name="father_name"/>
+								<field name="citizenship_of_father"/>
+								<field name="occupation_of_father"/>
+							</group>
+						</group>
+						<group>
+							<field name="parent_address"/>
+						</group>
+						<group>
+							<group>
+								<field name="emer_contact_person"/>
+							</group>
+							<group>
+								<field name="emer_contact_no"/>
+							</group>
+						</group>
+						<group>
+							<field name="emer_contact_address"/>
+						</group>
+					</page>
+				</notebook>
+			</field>
+		</record>
+		<menuitem action="hr.open_view_employee_list_my" id="hr.menu_open_view_employee_list_my" sequence="3" parent="hr.menu_hr_root" groups="base.group_hr_user"/>
+		<!--
+
+		<record id="custom_view_employee_form" model="ir.ui.view">
+			<field name="name">custom.hr.employee.form</field>
+			<field name="model">hr.employee</field>
+			<field name="arch" type="xml">
+				<form string="Employee">
+					<sheet>
+						<div class="oe_button_box" name="button_box" groups="base.group_hr_user">
+							<button name="toggle_active" type="object"
+									class="oe_stat_button" icon="fa-archive">
+								<field name="active" widget="boolean_button"
+									options='{"terminology": "archive"}'/>
+							</button>
+						</div>
+						<field name="image" widget='image' class="oe_avatar" options='{"preview_image":"image_medium"}'/>
+						<div class="oe_title">
+							<label for="name" class="oe_edit_only"/>
+							<h1>
+								<field name="name" placeholder="Employee's Name"/>
+							</h1>
+						</div>
+						<field name="category_ids" widget="many2many_tags" placeholder="e.g. Part Time" groups="base.group_hr_user"/>
+						<notebook>
+							<page name="public" string="Public Information">
+								<group>
+									<group string="Contact Information">
+										<field name="address_id" on_change="onchange_address_id(address_id)"
+											context="{'show_address': 1}"
+											options='{"always_reload": True, "highlight_first_line": True}'/>
+										<field name="mobile_phone"/>
+										<field name="work_location"/>
+										<field name="work_email" widget="email"/>
+										<field name="work_phone"/>
+									</group>
+									<group string="Position">
+										<field name="department_id" on_change="onchange_department_id(department_id)"/>
+										<field name="job_id"/>
+										<field name="parent_id"/>
+										<field name="coach_id"/>
+									</group>
+								</group>
+								<field name="notes" placeholder="Other Information ..." colspan="4"/>
+							</page>
+							<page string="Personal Information">
+								<group>
+									<group string="Citizenship &amp; Other Information">
+										<field name="country_id" options='{"no_open": True, "no_create": True}'/>
+										<field name="identification_id" groups="base.group_hr_user"/>
+										<field name="passport_id" groups="base.group_hr_user"/>
+										<field name="bank_account_id"/>
+									</group>
+									<group string="Contact Information">
+										<field name="address_home_id"
+											context="{'show_address': 1}"
+											options='{"always_reload": True, "highlight_first_line": True}'/>
+									</group>
+									
+									<group string="Status">
+										<field name="gender"/>
+										<field name="marital"/>
+									</group>
+									<group string="Birth">
+										<field name="birthday"/>
+									</group>
+									
+									<field name="academics_ids" string="Education">
+										<tree string="Academic Level" editable="bottom">
+											<field name="acad_level" />
+											<field name="school" />
+											<field name="degree_obtained" />
+											<field name="honors" />					
+										</tree>
+									</field>
+									
+								</group>
+							</page>
+							<page string="HR Settings" groups="base.group_hr_user">
+								<group>
+									<group string='Status' name="active_group">
+										<field name="company_id" groups="base.group_multi_company" on_change="onchange_company(company_id)"/>
+										<field name="user_id" on_change="onchange_user(name, image, user_id)" string="Related User"
+											context="{'default_groups_ref': ['base.group_user']}"/>
+									</group>
+								</group>
+							</page>
+						</notebook>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record id="custom_view_employee_tree" model="ir.ui.view">
+			<field name="name">custom.hr.employee.tree</field>
+			<field name="model">hr.employee</field>
+			<field name="arch" type="xml">
+				<tree string="Employees" decoration-bf="message_needaction==True">
+					<field name="name"/>
+					<field name="work_phone"/>
+					<field name="work_email"/>
+					<field name="company_id" groups="base.group_multi_company"/>
+					<field name="department_id"/>
+					<field name="job_id"/>
+					<field name="parent_id"/>
+					<field name="coach_id" invisible="1"/>
+					<field name="message_needaction" invisible="1"/>
+				</tree>
+			</field>
+		</record>
+		
+		<record id="custom_open_view_employee_list_my" model="ir.actions.act_window">
+			<field name="name">Employees</field>
+			<field name="res_model">hr.employee</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">kanban,tree,form</field>
+			<field name="domain">['user_id', '=', uid]</field>
+			<field name="context">{}</field>
+			<field name="view_id" eval="False"/>
+			<field name="help" type="html">
+			  <p class="oe_view_nocontent_create">
+				Click to add a new employee.
+			  </p><p>
+				With just a quick glance on the Odoo employee screen, you
+				can easily find all the information you need for each person;
+				contact data, job position, availability, etc.
+			  </p>
+			</field>
+		</record>
+		
+		<menuitem action="custom_open_view_employee_list_my" id="custom_menu_open_view_employee_list_my" sequence="3" parent="hr.menu_hr_root" groups="base.group_user"/>
+		
+	-->
+	<!-- trying to fix missing hr department list view
+		<record id="tk_open_module_tree_department" model="ir.actions.act_window">
+			<field name="name">Department</field>
+			<field name="res_model">hr.department</field>
+			<field name="inherit_id" ref="hr.open_module_tree_department"/>
+			<field name="view_type">form</field>
+			<field name="view_mode">kanban,tree,form</field>
+			<field name="domain"></field>
+			<field name="context">{}</field>
+			<field name="view_id" eval="False"/>
+		</record>
+	-->
+		<record id="view_configure_late_form_2" model="ir.ui.view">
+			<field name="model">config.late</field>
+			<field name="name">view.configure.late.form.2</field>
+			<field name="inherit_id" ref="attendance_monitor.view_configure_late_form"/>
+			<field name="arch" type="xml">
+				<field name="name" position="after">
+					<field name="employee_internal_category" required="True"/>
+				</field>
+			</field>
+		</record>
+
+		<record id="view_configure_late_tree_2" model="ir.ui.view">
+			<field name="model">config.late</field>
+			<field name="name">view.configure.late.tree.2</field>
+			<field name="inherit_id" ref="attendance_monitor.view_configure_late_tree"/>
+			<field name="arch" type="xml">
+				<field name="name" position="after">
+					<field name="employee_internal_category"/>
+				</field>
+			</field>
+		</record>
+
+
+	</data>
+</openerp>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+
+	<data noupdate="0">
+		<!--
+		<record model="ir.ui.menu" id="mod_id.menu_id">
+		  <field name="groups_id" eval="[(6,0,[ref('group_my_restricted_group')])]"/>
+		</record>
+		-->
+		<!-- Leaves -->
+		<record model="ir.ui.menu" id="hr_holidays.menu_open_department_leave_approve">
+			<field name="groups_id" eval="[(6,0,[ ref('base.group_hr_manager') ])]"/>
+		</record>
+
+		<!-- Leaves Allocation -->
+		<record model="ir.ui.menu" id="hr_holidays.menu_open_department_leave_allocation_approve">
+			<field name="groups_id" eval="[(6,0,[ ref('base.group_hr_manager') ])]"/>
+		</record>
+
+		<!-- Reports -->
+		<record model="ir.ui.menu" id="hr_holidays.menu_hr_holidays_report">
+			<field name="groups_id" eval="[(6,0,[ ref('base.group_hr_manager') ])]"/>
+		</record>
+
+		<!-- Leave Details -->
+		<record model="ir.ui.menu" id="hr_holidays.menu_open_employee_leave">
+			<field name="groups_id" eval="[(6,0,[ ref('base.group_hr_manager') ])]"/>
+		</record>
+
+		<!-- Resumes and Letters -->
+		<record model="ir.ui.menu" id="hr_recruitment.menu_crm_case_categ0_act_job02">
+			<field name="groups_id" eval="[(6,0,[ ref('base.group_hr_manager') ])]"/>
+		</record>
+
+
+
+		<!-- Employees -->
+		<record model="ir.ui.menu" id="hr.menu_open_view_employee_list_my">
+			<field name="groups_id" eval="[(6,0,[ ref('base.group_hr_manager') ])]"/>
+		</record>
+
+		<!-- Department -->
+		<record model="ir.ui.menu" id="hr.menu_hr_department_tree">
+			<field name="groups_id" eval="[(6,0,[ ref('base.group_hr_manager') ])]"/>
+		</record>
+
+		<!-- Recruitment -->
+		<record model="ir.ui.menu" id="hr_recruitment.menu_hr_recruitment_root">
+			<field name="groups_id" eval="[(6,0,[ ref('base.group_hr_manager') ])]"/>
+		</record>
+		
+		
+
+		<!-- Leaves to Approve -->
+		<record model="ir.ui.menu" id="hr_holidays.menu_hr_holidays_approvals">
+			<field name="groups_id" eval="[(6,0,[ ref('base.group_hr_manager') ])]"/>
+		</record>
+
+		<!-- Leaves/Reports -->
+		<record model="ir.ui.menu" id="hr_holidays.menu_hr_holidays_report">
+			<field name="groups_id" eval="[(6,0,[ ref('base.group_hr_manager') ])]"/>
+		</record>
+
+		<!-- additional -->
+		<!-- Contacts -->
+		<record model="ir.ui.menu" id="mail.menu_contacts">
+			<field name="groups_id" eval="[(6,0,[ ref('base.group_hr_manager') ])]"/>
+		</record>		
+
+	</data>
+</openerp>

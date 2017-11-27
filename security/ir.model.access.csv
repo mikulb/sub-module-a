@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_seminars,dlsz.seminars.manager,model_dlsz_seminars,base.group_hr_manager,1,1,1,0
+access_dlsz_hr_children,dlsz.hr.children.manager,model_dlsz_hr_children,base.group_hr_manager,1,1,1,0
+acces_lsgh_hr_academics,lsgh.hr.academics.manager,model_lsgh_hr_academics,base.group_hr_manager,1,1,1,0
+
+access_seminars_user,dlsz.seminars.user,model_dlsz_seminars,base.group_user,1,1,1,1
+access_dlsz_hr_children_user,dlsz.hr.children.user,model_dlsz_hr_children,base.group_user,1,1,1,1
+acces_lsgh_hr_academics_user,lsgh.hr.academics.user,model_lsgh_hr_academics,base.group_user,1,1,1,1
+
+access_hr_employee_user,hr.employee users,model_hr_employee,base.group_user,1,1,0,0
+
+acces_employee_internal_category,employee.internal.category.manager,model_employee_internal_category,base.group_hr_manager,1,1,1,0
